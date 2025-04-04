@@ -1,0 +1,11 @@
+<turbo-stream action="append" target="conversation_items">
+  <template>
+    <%= render partial: "comments/comment", locals: { comment: @comment } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="new_comment">
+  <template>
+    <%= render partial: "comments/form", locals: { project: @project, comment: Comment.new } %>
+  </template>
+</turbo-stream>

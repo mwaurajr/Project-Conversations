@@ -1,0 +1,80 @@
+<div id="<%= dom_id(comment) %>" class="<%= comment.parent_id.present? ? 'ml-12' : '' %>">
+  <div class="bg-white p-4 rounded border">
+    <div class="flex justify-between items-start">
+      <div class="flex items-start">
+        <div class="flex-shrink-0 mr-3">
+          <div class="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center">
+            <span class="text-blue-600 font-medium"><%= comment.user.name_or_email[0].upcase %></span>
+          </div>
+        </div>
+        <div>
+          <p class="font-medium"><%= comment.user.name_or_email %></p>
+          <p class="text-gray-700 mt-1"><%= comment.content %></p>
+
+          <% if comment.image.attached? %>
+            <div class="mt-2">
+              <%= image_tag comment.image.variant(resize_to_limit: [300, 300]), class: "rounded max-w-full" %>
+            </div>
+          <% end %>
+
+          <div class="flex items-center mt-2 space-x-4">
+            <div id="<%= dom_id(comment, :likes) %>" class="flex items-center">
+              <% if comment.liked_by?(current_user) %>
+                <%= button_to comment_like_path(comment, comment.likes.find_by(user: current_user)), method: :delete, class: "text-xs text-red-600 flex items-center" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" />
+                  </svg>
+                  <span><%= comment.likes.count %></span>
+                <% end %>
+              <% else %>
+                <%= button_to comment_likes_path(comment), class: "text-xs text-gray-600 flex items-center hover:text-red-600" do %>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  <span><%= comment.likes.count %></span>
+                <% end %>
+              <% end %>
+            </div>
+
+            <div data-controller="reply">
+              <button data-action="click->reply#toggle" class="text-xs text-gray-600 flex items-center hover:text-blue-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                </svg>
+                <span>Reply</span>
+              </button>
+
+              <div data-reply-target="form" class="hidden mt-3">
+                <%= form_with model: [comment.project, Comment.new], class: "mt-2" do |f| %>
+                  <%= f.hidden_field :parent_id, value: comment.id %>
+                  <div class="flex">
+                    <%= f.text_area :content, placeholder: "Write a reply...", required: true, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+                  </div>
+                  <div class="mt-2 flex justify-end">
+                    <%= f.submit "Reply", class: "px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <% if comment.user == current_user %>
+              <%= button_to project_comment_path(comment.project, comment), method: :delete, class: "text-xs text-gray-600 flex items-center hover:text-red-600" do %>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Delete</span>
+              <% end %>
+            <% end %>
+          </div>
+
+        </div>
+      </div>
+      <span class="text-xs text-gray-500"><%= time_ago_in_words(comment.created_at) %> ago</span>
+    </div>
+  </div>
+  <div id="<%= dom_id(comment, :replies) %>" class="mt-2">
+    <% comment.replies.includes(:user, :likes).order(created_at: :asc).each do |reply| %>
+      <%= render partial: "comments/comment", locals: { comment: reply } %>
+    <% end %>
+  </div>
+</div>
