@@ -1,0 +1,32 @@
+<header class="bg-white shadow">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center py-4">
+      <div class="flex items-center">
+        <a href="<%= root_path %>" class="text-xl font-bold text-blue-600">ProjectConvo</a>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <% if user_signed_in? %>
+          
+          
+          <div class="relative" data-controller="dropdown">
+            <button data-action="click->dropdown#toggle" class="flex items-center focus:outline-none">
+              <span class="mr-2"><%= current_user.name_or_email %></span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+              <%= link_to "Profile", edit_user_registration_path, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" %>
+              <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" %>
+            </div>
+          </div>
+        <% else %>
+          <%= link_to "Sign In", new_user_session_path, class: "text-blue-600 hover:text-blue-800" %>
+          <%= link_to "Sign Up", new_user_registration_path, class: "ml-4 px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</header>
