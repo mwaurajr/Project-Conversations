@@ -1,0 +1,29 @@
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-2xl font-bold mb-6"><%= action_name == 'new' ? 'New Project' : 'Edit Project' %></h1>
+  
+  <div class="bg-white rounded-lg shadow p-6">
+    <%= form_with model: @project do |f| %>
+      <div class="mb-4">
+        <%= f.label :title, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :title, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+      </div>
+      
+      <div class="mb-4">
+        <%= f.label :description, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_area :description, rows: 4, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+      </div>
+      
+      <% if action_name == 'new' %>
+        <div class="mb-4">
+          <%= f.label :status, class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.select :status, Project::STATUSES, {}, class: "block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50" %>
+        </div>
+      <% end %>
+      
+      <div class="flex justify-end">
+        <%= link_to "Cancel", projects_path, class: "mr-2 px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50" %>
+        <%= f.submit action_name == 'new' ? 'Create Project' : 'Update Project', class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+      </div>
+    <% end %>
+  </div>
+</div>

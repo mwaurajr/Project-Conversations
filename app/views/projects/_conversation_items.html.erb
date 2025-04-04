@@ -1,0 +1,27 @@
+<% conversation_items.each do |item| %>
+  <% if item.is_a?(Comment) %>
+    <%= render partial: "comments/comment", locals: { comment: item } %>
+  <% elsif item.is_a?(StatusChange) %>
+    <div id="<%= dom_id(item) %>" class="bg-gray-50 p-4 rounded flex items-center">
+      <div class="flex-shrink-0 mr-3">
+        <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
+      </div>
+      <div>
+        <p class="text-gray-600">
+          <span class="font-medium"><%= item.user.name_or_email %></span> 
+          changed status from 
+          <span class="font-medium"><%= item.previous_status %></span> 
+          to 
+          <span class="font-medium"><%= item.new_status %></span>
+        </p>
+        <p class="text-xs text-gray-500 mt-1">
+          <%= time_ago_in_words(item.created_at) %> ago
+        </p>
+      </div>
+    </div>
+  <% end %>
+<% end %>

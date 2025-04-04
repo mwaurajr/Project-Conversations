@@ -1,0 +1,31 @@
+<turbo-stream action="replace" target="<%= dom_id(@project) %>">
+  <template>
+    <%= render partial: "projects/project", locals: { project: @project } %>
+  </template>
+</turbo-stream>
+
+<turbo-stream action="append" target="conversation_items">
+  <template>
+    <div id="<%= dom_id(@project.status_changes.last) %>" class="bg-gray-50 p-4 rounded flex items-center">
+      <div class="flex-shrink-0 mr-3">
+        <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+        </div>
+      </div>
+      <div>
+        <p class="text-gray-600">
+          <span class="font-medium"><%= @project.status_changes.last.user.name_or_email %></span> 
+          changed status from 
+          <span class="font-medium"><%= @project.status_changes.last.previous_status %></span> 
+          to 
+          <span class="font-medium"><%= @project.status_changes.last.new_status %></span>
+        </p>
+        <p class="text-xs text-gray-500 mt-1">
+          just now
+        </p>
+      </div>
+    </div>
+  </template>
+</turbo-stream>

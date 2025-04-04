@@ -1,0 +1,39 @@
+<div class="mb-6 flex justify-between items-center">
+  <h1 class="text-2xl font-bold">My Projects</h1>
+  <%= link_to "New Project", new_project_path, class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+</div>
+
+<% if @projects.any? %>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @projects.each do |project| %>
+      <div id="<%= dom_id(project) %>" class="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow">
+        <div class="mb-4">
+          <h2 class="text-xl font-semibold text-gray-800"><%= project.title %></h2>
+          <span class="inline-block mt-2 px-3 py-1 text-sm rounded-full
+            <%= case project.status
+                when 'Planning' then 'bg-gray-100 text-gray-800'
+                when 'In Progress' then 'bg-blue-100 text-blue-800'
+                when 'Review' then 'bg-yellow-100 text-yellow-800'
+                when 'Completed' then 'bg-green-100 text-green-800'
+                end %>">
+            <%= project.status %>
+          </span>
+        </div>
+        
+        <p class="text-gray-600 mb-4 line-clamp-2"><%= project.description %></p>
+        
+        <div class="flex justify-between items-center">
+          <span class="text-sm text-gray-500">
+            <%= project.comments.count %> comment<%= 's' if project.comments.count != 1 %>
+          </span>
+          <%= link_to "View", project_path(project), class: "text-blue-600 hover:text-blue-800" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-white rounded-lg shadow p-8 text-center">
+    <p class="text-gray-600 mb-4">You don't have any projects yet.</p>
+    <%= link_to "Create your first project", new_project_path, class: "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" %>
+  </div>
+<% end %>
