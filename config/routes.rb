@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     resource :like, only: [:destroy]
   end
 
+  # once I implement notification using notified gem
   resources :notifications, only: [:index] do
     post :mark_as_read, on: :member
     post :mark_all_as_read, on: :collection
